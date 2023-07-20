@@ -5,11 +5,10 @@ export default function Document() {
 
   
   return (
-    <div >
+    <div>
       
       homepage after update
-      and after adding the big globals.css css file code 
-      and image and other assets 
+      (added admin pg css too and some asset images to be used later)
 
 
     </div>
