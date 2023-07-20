@@ -11,6 +11,9 @@ export default function Document() {
           integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
           crossOrigin="anonymous"
         />
+        {/* <!-- Fontawesome CSS --> */}
+		  <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css"/>
+		  <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css"></link>
       </Head>
       <body>
         <Main />

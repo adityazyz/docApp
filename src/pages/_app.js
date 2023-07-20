@@ -2,7 +2,9 @@
 import Head from "next/head";
 import Script from "next/script";
 import "../styles/globals.css"
-import "../styles/admin-globals.css"
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
+// import "../styles/admin-globals.css"     << will import directly in admin pages
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -16,7 +18,10 @@ function MyApp({ Component, pageProps }) {
         integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
         crossOrigin="anonymous"
       />
+      <Navbar/>
       <Component {...pageProps} />
+      <Footer/>
+
     </>
   );
 }
