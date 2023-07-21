@@ -13,8 +13,7 @@ export default function Document() {
   
        {/* { { /* <!-- Main Wrapper --> */ } 
 		<div className="main-wrapper">
-			<h1 className= "text-green-500">hiii from adiii</h1>
-		
+			<h1 className= "text-red-500">hiii from adiii</h1>
 
 			{ /* <!-- Home Banner --> */ }
 			<section className="section section-search">
