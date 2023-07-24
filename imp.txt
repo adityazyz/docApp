@@ -1,0 +1,20 @@
+addSubCategory: (state, action) => {
+      // generate random id
+      let x = Math.floor(Math.random() * 100);
+      let token = `${x}` + Date.now();
+
+      let newSubCategory = {
+        id: parseInt(token),
+        name: action.payload.subCategoryName,
+        subCategories: [],
+      };
+
+      for (let category of state.data) {
+        if (category.id === action.payload.categoryId) {
+          category.subCategories.push(...newSubCategory);
+        }else if (category.subCategories.length > 0) {
+          addSubCategory({subCategoryName : action.payload.subCategoryName, categoryId : action.payload.categoryId})
+        }
+      }
+
+    },

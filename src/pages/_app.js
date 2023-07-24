@@ -6,6 +6,8 @@ import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { useRouter } from "next/router";
 import AdminNavbar from "../../components/AdminNavbar";
+import { store } from '../../store'
+import { Provider } from 'react-redux'
 
 // import "../styles/admin-globals.css"     << will import directly in admin pages
 
@@ -15,6 +17,7 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <>
+    <Provider store={store}>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
@@ -25,7 +28,6 @@ function MyApp({ Component, pageProps }) {
         crossOrigin="anonymous"
       />
 
-      
       {/* // show admin navbar if admin page open  */}
       {(router.pathname === "/admin" ) && <AdminNavbar/>}
       
@@ -34,7 +36,8 @@ function MyApp({ Component, pageProps }) {
       <Component {...pageProps} />
       {/* // don't show normal footer if admin page open  */}
       {(router.pathname !== "/admin" ) && <Footer/>}
-
+    
+      </Provider>
     </>
   );
 }
