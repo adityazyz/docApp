@@ -1,7 +1,7 @@
 import HomePage from "../../components/HomePage";
 import Accordion from "../../components/Accordion";
 import CategoryTree from "../../components/CategoryTree";
-
+import DocProfileSetting from "../../components/DocProfileSetting";
 
 export default function Document() {
 
@@ -9,7 +9,9 @@ export default function Document() {
     <>
       {/* <HomePage/> */}
       {/* <Accordion/> */}
-      <CategoryTree  />
+      {/* <CategoryTree  /> */}
+      {/* <DocProfileSetting/> */}
+      
     </>
   );
 }

@@ -1,20 +1,28 @@
-addSubCategory: (state, action) => {
-      // generate random id
-      let x = Math.floor(Math.random() * 100);
-      let token = `${x}` + Date.now();
+// drop in pages, and dropbox in components are for testing purposes
 
-      let newSubCategory = {
-        id: parseInt(token),
-        name: action.payload.subCategoryName,
-        subCategories: [],
-      };
+axios calls
 
-      for (let category of state.data) {
-        if (category.id === action.payload.categoryId) {
-          category.subCategories.push(...newSubCategory);
-        }else if (category.subCategories.length > 0) {
-          addSubCategory({subCategoryName : action.payload.subCategoryName, categoryId : action.payload.categoryId})
-        }
-      }
+// getting category data 
+// axios
+    // .get("/api/getCategory")
+    // .then(response=>console.log(response.data.data[0]))
+    // .catch(error=>console.log(error.message))
 
-    },
+
+// save Category Changes
+// axios.put("/api/saveCategoryChanges", {data})
+    // .then((response)=> {
+    //   console.log(response.data);
+    // })
+    // .catch((error)=> {
+    //   console.log(error.message);
+    // });
+
+// delete category 
+// axios
+    // .delete("/api/deleteCategory")
+    // .then(response=>console.log(response.data.data[0]))
+    // .catch(error=>console.log(error.message))
+
+
+

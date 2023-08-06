@@ -1,53 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+
 const initialState = {
-  data: [
-    {
-      id: 1,
-      name: "Cat 1",
-      subCategories: [
-        {
-          id: 11,
-          name: "Sub 1-1",
-          subCategories: [],
-        },
-        {
-          id: 12,
-          name: "Sub 1-2",
-          subCategories: [],
-        },
-      ],
-    },
-    {
-      id: 2,
-      name: "Cat 2",
-      subCategories: [
-        {
-          id: 21,
-          name: "Sub 2-1",
-          subCategories: [
-            {
-              id: 211,
-              name: "Sub 2-1-1",
-              subCategories: [],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: 3,
-      name: "Cat 3",
-      subCategories: [],
-    },
-  ],
+  data : [],
+  error : null
 };
+
 
 export const categorySlice = createSlice({
   name: "category",
   initialState,
   reducers: {
     addCategory: (state, action) => {
+      // set error to empty
+      state.error = null;
+
       // generate random id
       let x = Math.floor(Math.random() * 100);
       let token = `${x}` + Date.now();
@@ -58,10 +25,26 @@ export const categorySlice = createSlice({
         subCategories: [],
       };
 
-      // adding
-      state.data.push(newCategory);
+      // check for same category
+      let duplicate = false;
+      state.data.map((element)=>{
+        if(element.name === newCategory.name){
+          duplicate = true;
+        }
+      })
+      // adding 
+      if(!duplicate){
+        state.data.push(newCategory);
+      }else{
+        state.error = "New Category Should be unique !"
+      }
+
+      
     },
     addSubCategory: (state, action) => {
+      // set error to empty
+      state.error = null;
+
       // generate random id
       let x = Math.floor(Math.random() * 100);
       let token = `${x}` + Date.now();
@@ -76,11 +59,26 @@ export const categorySlice = createSlice({
       let dataPassed = state.data;
 
       const addSubCategoriesById = (data,subCategoryToAdd, categoryId) => {
+        
         for (let category of data) {
           if (category.id === categoryId) {
-            category.subCategories.push(subCategoryToAdd);
-            console.log(data)
+            
+            // search if the particular sub category already exists !!!!!!!!!
+            let duplicateCategory = false;
+            category.subCategories.map((element)=>{
+              if(element.name === subCategoryToAdd.name){
+                duplicateCategory = true;
+              }
+            })
+            
+            if(!duplicateCategory){   // add sub category
+              category.subCategories.push(subCategoryToAdd);
+            }else{ 
+              // if duplicate category (show toast)
+              state.error = "New Category Should be unique !"
+            }
             return true;
+
           } else if (category.subCategories.length > 0) {
             const subCategoryAdded = addSubCategoriesById(
               category.subCategories,
@@ -127,11 +125,17 @@ export const categorySlice = createSlice({
         // set state data to updated array
         state.data = dataPassed;
 
+    },
+
+    updateCategoryStore : (state,action)=>{
+      state.data = action.payload
     }
   },
+
 });
 
 // Action creators are generated for each case reducer function
-export const { addCategory, addSubCategory, deleteCategory } = categorySlice.actions;
+export const { addCategory, addSubCategory, deleteCategory, updateCategoryStore } = categorySlice.actions;
 
 export default categorySlice.reducer;
+ 

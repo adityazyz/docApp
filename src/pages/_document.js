@@ -14,7 +14,18 @@ export default function Document() {
         {/* <!-- Fontawesome CSS --> */}
 		  <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css"/>
 		  <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css"></link>
-      
+
+      {/* select 2 css 
+		<link rel="stylesheet" href="assets/plugins/select2/css/select2.min.css"></link>
+
+    {/* <!-- Bootstrap CSS --> */}
+		{/* <link rel="stylesheet" href="assets/css/bootstrap.min.css"></link> */}
+
+    {/* <!-- Bootstrap CSS --> */}
+		{/* <link rel="stylesheet" href="assets/plugins/bootstrap-tagsinput/css/bootstrap-tagsinput.css"/> */}
+		
+		{/* <link rel="stylesheet" href="assets/plugins/dropzone/dropzone.min.css"></link> */} 
+
       </Head>
       <body>
         <Main />

@@ -3009,7 +3009,6 @@ html.menu-opened body {
 }
 .page-breadcrumb .breadcrumb-item + .breadcrumb-item:before {
 	color: #fff;
-	font-size: 10px;
 }
 .sort-by {
     float: right;
@@ -5063,7 +5062,7 @@ html.menu-opened body {
 	margin-bottom: 1.5rem;
 }
 .change-photo-btn {
-    background-color: #20c0f3;
+    /* background-color: #20c0f3; */
     border-radius: 50px;
     color: #fff;
     cursor: pointer;
