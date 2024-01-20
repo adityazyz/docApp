@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  // if the element have title ..use it and search for child fields in "fileds" array
+  // if the element have heading ..use it and search for child fields in "fileds" array
   // you will get fields Name(s) and type(s) in struct elements of the array
-  // or ----- if title field is null, you can directly access 1 field name and type
-  EMP_PROFILE: [
+  // or ----- if heading field is null, you can directly access 1 field name and type
+  EMP_PROFILE : [
     //PersonalDetails  (-EMP-) ----- [element at index = 0 ]
     {
-      title: "PersonalDetails",
+      heading: "PersonalDetails",
       fields: [
         {
           fieldName: "UserId",
@@ -53,7 +53,7 @@ const initialState = {
     },
     // Address (-EMP-) ----- [element at index = 1 ]
     {
-      title: "Address",
+      heading: "Address",
       fields: [
         {
           fieldName: "Address",
@@ -79,14 +79,14 @@ const initialState = {
     },
     // Pricing (-EMP-) ----- [element at index = 2 ]
     {
-      title: null,
+      heading: null,
       fieldName: "Pricing",
       fieldType: "number",
     },
 
     // Service (-EMP-) ----- [element at index = 3 ]
     {
-      title: "Service",
+      heading: "Service",
       fields: [
         {
           fieldName: "Specializations",
@@ -100,7 +100,8 @@ const initialState = {
     },
     // Education (-EMP-) ----- [element at index = 4 ]
     {
-      title: "Education",
+      heading: "Education",
+      multiple : true,
       fields: [
         {
           fieldName: "Degree",
@@ -118,7 +119,8 @@ const initialState = {
     },
     // Experience (-EMP-) ----- [element at index = 5 ]
     {
-      title: "Experience",
+      heading: "Experience",
+      multiple : true,
       fields: [
         {
           fieldName: "Place",
@@ -140,7 +142,8 @@ const initialState = {
     },
     // Workplace info (-EMP-) ----- [element at index = 6 ]
     {
-      title: "WorkPlaceInfo",
+      heading: "WorkPlaceInfo",
+      multiple : true,
       fields: [
         {
           fieldName: "Name",
@@ -158,7 +161,8 @@ const initialState = {
     },
     // Award (-EMP-) ----- [element at index = 7 ]
     {
-      title: "Award",
+      heading: "Award",
+      multiple : true,
       fields: [
         {
           fieldName: "Name",
@@ -172,20 +176,40 @@ const initialState = {
     },
     // Memberships (-EMP-) ----- [element at index = 8 ]
     {
-      title: null,
+      heading: null,
+      multiple : true,
       fieldName: "Memberships",
       fieldType: "text",
     },
     // Password (-EMP-) ----- [element at index = 9 ]
     {
-      title: null,
+      heading: null,
       fieldName: "Password",
       fieldType: "password",
     },
     // Extra (-EMP-) ----- [element at index = 10 ]
     {
-      title: "Extra",
-      fields: [],
+      heading: "Extra",
+      fields: [
+        {
+            heading: null,
+            fieldName: "demoo",
+            fieldType: "number",
+          },
+        {
+            heading: "Award",
+            fields: [
+              {
+                fieldName: "Name",
+                fieldType: "text",
+              },
+              {
+                fieldName: "Year",
+                fieldType: "text",
+              },
+            ],
+          },
+      ],
     },
   ],
 
@@ -193,7 +217,7 @@ const initialState = {
   USR_PROFILE: [
     // Personal Details (-USR-) ---- [element at index = 0 ]
     {
-      title: "PersonalDetails",
+      heading: "PersonalDetails",
       fields: [
         {
           fieldName: "UserId",
@@ -232,7 +256,7 @@ const initialState = {
 
     // Address (-USR-) ---- [element at index = 1 ]
     {
-      title: "Address",
+      heading: "Address",
       fields: [
         {
           fieldName: "Address",
@@ -258,13 +282,13 @@ const initialState = {
     },
     // Password (-USR-) ---- [element at index = 2 ]
     {
-      title: null,
+      heading: null,
       fieldName: "Password",
       fieldType: "password",
     },
     // Extra (-USR-) ----- [element at index = 3 ]
     {
-      title: "Extra",
+      heading: "Extra",
       fields: [],
     },
   ]
@@ -274,10 +298,10 @@ export const profileStructureSlice = createSlice({
   name: "profileStructure",
   initialState,
   reducers: {
-    // functions below only changes "fields" property of struct with title -> "Extra" 
+    // functions below only changes "fields" property of struct with heading -> "Extra" 
     // fields takes an array -> of further fields in the 2 possible structures below :
-    // (1) -> { title : null , fieldName , fieldType} ...or
-    // (2) -> { title : "", fields : [ {fieldName, fieldType}, {}...]  }
+    // (1) -> { heading : null , fieldName , fieldType} ...or
+    // (2) -> { heading : "", fields : [ {fieldName, fieldType}, {}...]  }
     updateEmpProfileExtraFields: (state, action) => {
       state.EMP_PROFILE[10].fields = action.payload ;  // payload should be an array
     },

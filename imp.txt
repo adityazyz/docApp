@@ -1,28 +1,129 @@
-// drop in pages, and dropbox in components are for testing purposes
+setDetails({...details,[e.target.name]:e.target.value});
 
-axios calls
-
-// getting category data 
-// axios
-    // .get("/api/getCategory")
-    // .then(response=>console.log(response.data.data[0]))
-    // .catch(error=>console.log(error.message))
+// TODO later
+{ appply validationssssss on profile page...fields} 
+{non-unique id in profile page..datepickers (experience field)}
+{+ MAKE SEARCH DOC FEATURE }
++++ make doc profile such that, it matches doc spec with available speciality before showing
 
 
-// save Category Changes
-// axios.put("/api/saveCategoryChanges", {data})
-    // .then((response)=> {
-    //   console.log(response.data);
-    // })
-    // .catch((error)=> {
-    //   console.log(error.message);
-    // });
+-----------------------------------------------------------------------------------------
+// TODO  -----
+i) done :)
+  768 px 
+---------------
 
-// delete category 
-// axios
-    // .delete("/api/deleteCategory")
-    // .then(response=>console.log(response.data.data[0]))
-    // .catch(error=>console.log(error.message))
+{make doc profile such, it matches doc spec with available spec before showing} !!!!!
+ii) Search doctor feature 
+{
+  1) searchbar (search based on speciality)
+  { load spec list to show as dropdown suggestion while typing }
+  2) show doc cards after search, 
+  3) show doc ProfilePicture
+  4) show book appointment button
+}
+-----------------
+
+iii) Appointment feature  <<<<<<<<
+{
+
+1) ask doc to schedule appointments for everyweekday
+2) take patients to booking page from their profile
+3) book appontment, get appointment details, add shipping details and proceed to pay
+}
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+------ functionssss ----------
+
+1) for date and time 
+
+const convertDateTime = (dateTime) => {
+  const dateObj = new Date(dateTime);
+  
+  const options = {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true
+  };
+  
+  let inFormat = dateObj.toLocaleDateString('en', options);
+  let arr = inFormat.split(",");
+  let date = `${arr[0]}${arr[1]}`;
+  // also removed space from index 0 from time
+  let timeSplit = arr[2].split(" ")
+  let time = `${timeSplit[1]} ${timeSplit[2]}` 
+  
+  return `${date} ${time}`
+
+}
+
+2) for filtering the data 
+
+function filterObjectsByFields(objects, fields) {
+  return objects.map(object => {
+    const filteredObject = {};
+    fields.forEach(field => {
+      if (object.hasOwnProperty(field)) {
+        filteredObject[field] = object[field];
+      }
+    });
+    return filteredObject;
+  });
+}
+
+3) to merge 3 fields ( for fname, lname and profile picture);
+
+function combineFields(data) {
+  let myArr = data;
+  myArr.forEach(object => {
+    
+    const valuesArray = [object["FirstName"], object["LastName"], object["ProfilePicture"]];
+    object["Name"] = valuesArray;
+    delete object["FirstName"];
+    delete object["LastName"];
+    delete object["ProfilePicture"];
+  });
+  
+  return myArr;
+}
+
+
+==============================================================================
+
+HOW APPOINTMENT SYSTEM IS GONNA WORK
+
+data to be stored => {
+  doctorId : ,
+  patientId : ,
+  totalTime : (total time of app.),
+  totalAmount : (calculated per minute  {as per the specified currency}), 
+  dateAndTime : (date & time in understandable format),
+  status : (pending/rejected/approved)
+}
+----------------------------------------------------------------
+
+
+
+1 -> make patient page working in admin ....(table )
+2 -> add doctor feature !
+3 -> rename paths
+
+4 -> make admin side responsive !!
+
+----------------------------------------------------------------

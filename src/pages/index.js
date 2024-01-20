@@ -1,17 +1,31 @@
-import HomePage from "../../components/HomePage";
-import Accordion from "../../components/Accordion";
-import CategoryTree from "../../components/CategoryTree";
-import DocProfileSetting from "../../components/DocProfileSetting";
+import Favicon from "../../components/Favicon";
+import MainHome from "../../components/MainHome";
+import { useEffect } from "react";
+import Jwt from "jsonwebtoken";
 
 export default function Document() {
+  useEffect(() => {
+    //  just update the last visit
+    let token = localStorage.getItem("token");
+
+    // logout if signedIn as Admin and it comes back to homepage
+    if (token) {
+      let decryptedToken = Jwt.decode(token, process.env.JWT_SECRET);
+      if(decryptedToken){
+        if (decryptedToken.UserType === "Admin") {
+          localStorage.removeItem("token");
+        }
+      }
+    }
+
+  }, []);
 
   return (
     <>
-      {/* <HomePage/> */}
-      {/* <Accordion/> */}
-      {/* <CategoryTree  /> */}
-      {/* <DocProfileSetting/> */}
-      
+      {/* using favicon  */}
+      <Favicon />
+
+      <MainHome />
     </>
   );
 }

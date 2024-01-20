@@ -1,10 +1,14 @@
+///// NOT IN USE YET
+
+
 import React from 'react'
+
 import { useSelector } from "react-redux";
 import axios from 'axios';
+import Favicon from "../../components/Favicon";
 
-// TODO HERE --------------------------===========--------------=-=-=-=-=-=-=
-// MAKE it work for both cases -> add and remove
-// and based on that, update other two files ( amin an usr)
+// TODO HERE --------------------------
+
 function empProfileStructure() {
 
     let empProfileStructure = useSelector((state) => state.profileStructure.EMP_PROFILE);
@@ -95,6 +99,7 @@ function empProfileStructure() {
 
   return (
     <div className='flex flex-col p-5'> 
+    <Favicon/>
       <div>empProfileStructure</div>
         <button
         className="rounded-xl bg-red-400 text-white h-10 w-40"

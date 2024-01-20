@@ -1,0 +1,181 @@
+[
+    {
+        "id": 1,
+        "name": "Main",
+        "categories": [
+            {
+                "id": 3,
+                "name": "Dashboard",
+                "categories": [],
+                "icon" : ""
+            },
+            {
+                "id": 4,
+                "name": "Appointments",
+                "categories": []
+            },
+            {
+                "id": 5,
+                "name": "Specialities",
+                "categories": []
+            },
+            {
+                "id": 6,
+                "name": "Doctors",
+                "categories": []
+            },
+            {
+                "id": 7,
+                "name": "Patients",
+                "categories": []
+            },
+            {
+                "id": 8,
+                "name": "Reviews",
+                "categories": []
+            },
+            {
+                "id": 9,
+                "name": "Transactions",
+                "categories": []
+            },
+            {
+                "id": 10,
+                "name": "Settings",
+                "categories": []
+            },
+            {
+                "id": 99,
+                "name": "Reports",
+                "categories": [
+                    {
+                        "id": 50,
+                        "name": "Invoice Report",
+                        "categories": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 100,
+        "name": "Pages",
+        "categories": [
+            {
+                "id": 101,
+                "name": "Profile",
+                "categories": []
+            },
+            {
+                "id": 999,
+                "name": "Authentication",
+                "categories": [
+                    {
+                        "id": 110,
+                        "name": "Login ",
+                        "categories": []
+                    },
+                    {
+                        "id": 114,
+                        "name": "Register ",
+                        "categories": []
+                    },
+                    {
+                        "id": 115,
+                        "name": "Forgot Password ",
+                        "categories": []
+                    },
+                    {
+                        "id": 116,
+                        "name": "Lock Screen ",
+                        "categories": []
+                    }
+                ]
+            },
+            {
+                "id": 150,
+                "name": "Error Pages",
+                "categories": [
+                    {
+                        "id": 151,
+                        "name": "500 Error Page ",
+                        "categories": []
+                    },
+                    {
+                        "id": 152,
+                        "name": "404 Error Page ",
+                        "categories": []
+                    }
+                ]
+            },
+            {
+                "id": 104,
+                "name": "Blank Page",
+                "categories": []
+            }
+        ]
+    },
+    {
+        "id": 300,
+        "name": "UI Interface",
+        "categories": [
+            {
+                "id": 301,
+                "name": "Components",
+                "categories": []
+            },
+            {
+                "id": 302,
+                "name": "Forms",
+                "categories": [
+                    {
+                        "id": 303,
+                        "name": "Basic Inputs ",
+                        "categories": []
+                    },
+                    {
+                        "id": 304,
+                        "name": "Input Groups ",
+                        "categories": []
+                    },
+                    {
+                        "id": 305,
+                        "name": "Horizontal Form  ",
+                        "categories": []
+                    },
+                    {
+                        "id": 307,
+                        "name": "Vertical Form ",
+                        "categories": []
+                    },
+                    {
+                        "id": 308,
+                        "name": "Form Mask ",
+                        "categories": []
+                    },
+                    {
+                        "id": 309,
+                        "name": "Form Validation ",
+                        "categories": []
+                    }
+                ]
+            },
+            {
+                "id": 400,
+                "name": "Tables",
+                "categories": [
+                    {
+                        "id": 401,
+                        "name": "Basic Basics ",
+                        "categories": []
+                    },
+                    {
+                        "id": 403,
+                        "name": "Data Table ",
+                        "categories": []
+                    }
+                ]
+            }
+        ]
+    }
+]

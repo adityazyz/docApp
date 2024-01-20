@@ -6,6 +6,75 @@
 
 /* CSSS FOR ACCORDION -------------------------- */
 
+body, html {
+	overscroll-behavior: none;
+
+  }
+
+
+  /* // for visible scroll  */
+  .frame {
+    overflow-y: auto;
+    /* border: 1px solid black;
+    height: 3em;
+    width: 10em;
+    line-height: 1em; */
+}
+
+.frame::-webkit-scrollbar {
+    -webkit-appearance: none;
+	
+}
+
+.frame::-webkit-scrollbar:vertical {
+    width: 11px;
+	left:-100px;
+}
+
+.frame::-webkit-scrollbar:horizontal {
+    height: 11px;
+}
+
+.frame::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white; /* should match background, can't be transparent */
+    background-color: rgba(0, 0, 0, .5);
+}
+
+
+
+
+
+  /* // for admin style ======== */
+.card {
+    border: 1px solid #f0f0f0;
+    margin-bottom: 1.875rem;
+}
+.card-body {
+	padding: 1.5rem;
+}
+.dash-widget-header {
+    align-items: center;
+    display: flex;
+    margin-bottom: 15px;
+}
+.dash-widget-icon {
+    align-items: center;
+    display: inline-flex;
+    font-size: 1.875rem;
+    height: 50px;
+    justify-content: center;
+    line-height: 48px;
+    text-align: center;
+    width: 50px;
+	border: 3px solid;
+    border-radius: 50px;
+    padding: 28px;
+}
+  /* // for admin style ======== */
+  
+
+
 .ac-h1 {
 	padding-bottom: 0;
 	margin-bottom: 0;
@@ -278,6 +347,7 @@ input[type=password] {
     min-height: 46px;
 	padding: 6px 15px;
 }
+
 .table .form-control {
 	font-size: 14px;
 	min-height: 38px;
@@ -1692,50 +1762,48 @@ button.bg-danger:hover {
 	font-weight: 400;
 	pointer-events: none;
 	position: absolute;
-	-webkit-transform: translate3d(0, 22px, 0) scale(1);
-	-ms-transform: translate3d(0, 22px, 0) scale(1);
-	-o-transform: translate3d(0, 22px, 0) scale(1);
-	transform: translate3d(0, 22px, 0) scale(1);
-	transform-origin: left top;
+	-webkit-transform: translate3d(0, 25px, 0) scale(1);
+	-ms-transform: translate3d(0, 25px, 0) scale(1);
+	-o-transform: translate3d(0, 25px, 0) scale(1);
+	transform: translate3d(0, 25px, 0) scale(1);
+	transform-origin: left top;	
 	transition: 240ms;
 	left: 12px;
-	top: -8px;
+	/* // where the label rest when not focused  */
+	top: -10px;
 	z-index: 1;
-	color: #b8b8b8;
-	margin-bottom: 0;
+	/* color: #b8b8b8; */
+	/* // bottom margin of the label when some text is filled  */
+	margin-bottom: 10;
 }
+
 .form-focus.focused .focus-label {
 	opacity: 1;
-	top: -18px;
+	/* top: -18px; */
 	font-size: 12px;
 	z-index: 1;
 }
-.form-focus .form-control:focus ~ .focus-label, 
-.form-focus .form-control:-webkit-autofill ~ .focus-label {
-	opacity: 1;
-	font-weight: 400;
-	top: -18px;
-	font-size: 12px;
-	z-index: 1;
-}
+
+/* // padding for input value  */
+/* // top bottom left */
 .form-focus .form-control {
 	height: 50px;
-	padding: 21px 12px 6px;
+	padding: 10px 12px 10px;   
 }
 .form-focus .form-control::-webkit-input-placeholder {
-	color: transparent;
+	color: #808080;
 	transition: 240ms;
 }
 .form-focus .form-control:focus::-webkit-input-placeholder {
 	transition: none;
 }
 .form-focus.focused .form-control::-webkit-input-placeholder {
-	color: #bbb;
+	color: #808080;
 }
 .form-focus.select-focus .focus-label {
 	opacity: 1;
 	font-weight: 300;
-	top: -20px;
+	top: -200px;
 	font-size: 12px;
 	z-index: 1;
 }
@@ -2121,9 +2189,7 @@ html.menu-opened body {
 	13. Footer
 -----------------------*/
 
-.footer {
-    background-color: #15558d;
-}
+
 .footer .footer-top {
 	padding: 40px 0;
 }
@@ -2196,7 +2262,7 @@ html.menu-opened body {
 	margin-right: 15px;
 }
 .footer .footer-bottom .copyright {
-	border-top: 1px solid #1663a6;
+	
 	padding: 30px 0;
 }
 .footer .footer-bottom .copyright-text p {
@@ -4236,7 +4302,6 @@ html.menu-opened body {
 	-ms-flex-pack: center;
 }
 .edit-link {
-    color: #20c0f3;
     font-size: 16px;
     margin-top: 4px;
 }
@@ -6729,12 +6794,12 @@ html.menu-opened body {
 		min-width: 200px;
 		visibility: hidden;
 		opacity: 0;
-		-webkit-transition: all .2s ease;
-		transition: all .2s ease;
-		display: block;
-		-webkit-transform: translateY(20px);
+		/* -webkit-transition: all .2s ease; */
+		/* transition: all .2s ease; */
+		/* display: block; */
+		/* -webkit-transform: translateY(20px);
 		-ms-transform: translateY(20px);
-		transform: translateY(20px);
+		transform: translateY(20px); */
 	}
 }
 

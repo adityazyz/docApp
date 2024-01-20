@@ -1,6 +1,10 @@
+
+///// NOT IN USE YET
+
 import React from "react";
 import { useSelector } from "react-redux";
 import axios from 'axios';
+import Favicon from "../../components/Favicon";
 
 function usrProfileStructure() {
 
@@ -91,6 +95,10 @@ function usrProfileStructure() {
 
   return (
     <div className='flex flex-col p-5'>
+
+      // webiste favicon
+      <Favicon/>
+      
       <div>usrProfileStructure</div>
       <button
         className="rounded-xl bg-red-400 text-white h-10 w-40"
