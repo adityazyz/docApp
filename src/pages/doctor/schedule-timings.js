@@ -9,11 +9,12 @@ function ScheduleTimings() {
 
   const [activeDay, setActiveDay] = useState("Monday");
   const router = useRouter();
+  const [currentIndex, setCurrentIndex] = useState();
   const [currentEmail, setCurrentEmail] = useState("");
   const [data, setData] = useState();
   const [deleteListener, setDeleteListener] = useState(false);
 
-  const [showDeleteModal, setShowDeleteModal] = useState(true);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -34,16 +35,25 @@ function ScheduleTimings() {
     }
   }, [deleteListener]);
 
+
   const handleDelete = (index) => {
+
     let newData = data[activeDay];
     newData.splice(index, 1);
     let myObj = {
       Email: currentEmail,
     };
     myObj[activeDay] = newData;
-
     console.log(myObj);
+
+    setTimeout(()=>{
+      setShowDeleteModal(false);
+      setCurrentIndex(null);
+    },1000)
+
   };
+
+
 
   return (
     <div
@@ -226,7 +236,11 @@ function ScheduleTimings() {
                                         {item["Start"]} - {item["End"]}
                                         <button
                                           className="ml-2"
-                                          onClick={() => handleDelete(index)}
+                                          onClick={() => {                                     
+                                            setCurrentIndex(index);
+                                            setShowDeleteModal(true);
+                                          }
+                                          }
                                         >
                                           <i className="fa fa-times text-[#E48684] hover:text-white "></i>
                                         </button>
@@ -284,6 +298,7 @@ function ScheduleTimings() {
                     type="button"
                     className="btn btn-danger ml-8"
                     onClick={()=>{
+                      handleDelete(currentIndex)
                     //   deleteDocProfile();
                       
                     }}

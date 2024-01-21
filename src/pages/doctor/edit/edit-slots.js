@@ -4,7 +4,7 @@ function editSlots() {
   return (
     <div>
         {/* /* // <!-- Edit Time Slot Modal --> */ }
-		<div className="absolute z-20 h-auto pb-8 md:p-0 sm:h-[100vh] w-[100vw] bg-black top-0 left-0 mt-[12vh]">
+		<div className="h-auto pb-8 md:p-0 sm:h-[100vh] w-[100vw]  mt-10">
 			<div className="modal-dialog modal-dialog-centered">
 				<div className="modal-content">
 					<div className="modal-header">
