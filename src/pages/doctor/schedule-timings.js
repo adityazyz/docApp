@@ -66,11 +66,11 @@ function ScheduleTimings() {
           <div className="col-sm-12">
             <div className="card">
               <div className="card-body">
-                <h4 className="card-title">Schedule Timings</h4>
+                <h4 className="card-title mt-2">Schedule Timings</h4>
                 <div className="profile-box">
                   <div className="row">
                     <div className="col-lg-4">
-                      <div className="form-group">
+                      {/* <div className="form-group">
                         <label>Timing Slot Duration</label>
                         <select className="select form-control">
                           <option>-</option>
@@ -79,10 +79,10 @@ function ScheduleTimings() {
                           <option>45 mins</option>
                           <option>1 Hour</option>
                         </select>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
-                  <div className="row">
+                  <div className="row mt-10">
                     <div className="col-md-12">
                       <div className="card schedule-widget mb-0">
                         {/* <!-- Schedule Header --> */}
@@ -200,24 +200,30 @@ function ScheduleTimings() {
                               {data && (
                                 <>
                                   {data[activeDay].length > 0 ? (
-                                    <a
-                                      className="edit-link"
+                                    <button
+                                      className="edit-link text-blue-400"
                                       onClick={() => {
-                                        router.push("/doctor/edit/edit-slots");
+                                        router.push(
+                                          { pathname: "/doctor/edit/edit-slots", query: { email: currentEmail, activeDay , currentSlots : JSON.stringify(data[activeDay]) } },
+                                          "/doctor/edit/edit-slots"
+                                        );
                                       }}
                                     >
                                       <i className="fa fa-edit mr-1"></i>Edit
-                                    </a>
+                                    </button>
                                   ) : (
-                                    <a
-                                      className="edit-link"
+                                    <button
+                                      className="edit-link text-blue-400"
                                       onClick={() => {
-                                        router.push("/doctor/add/add-slots");
+                                        router.push(
+                                          { pathname: "/doctor/add/add-slots", query: { email: currentEmail, activeDay } },
+                                          "/doctor/add/add-slots"
+                                        );
                                       }}
                                     >
                                       <i className="fa fa-plus-circle"></i> Add
                                       Slot
-                                    </a>
+                                    </button>
                                   )}
                                 </>
                               )}

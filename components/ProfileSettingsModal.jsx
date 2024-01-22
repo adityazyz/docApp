@@ -127,7 +127,7 @@ function ProfileSettingsModal({ userEmail, type }) {
   const [awardData, setAwardData] = useState([
     { AwardName: "", AwardYear: "", AwardBy: "" },
   ]);
-
+ 
   // record adding functions
   const addEducationData = () => {
     setEducationData((prevData) => [

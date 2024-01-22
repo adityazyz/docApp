@@ -7,9 +7,10 @@ const slotSchema = new mongoose.Schema({
   });
 
 const timingSchema = new mongoose.Schema(
+  // default : [ {"Start" : "" , "End" : "" }]
   {
     Email: { type: String, required: true, unique : true },
-    Monday: { type: [slotSchema] },
+    Monday: { type: [slotSchema]},
     Tuesday: { type: [slotSchema] },
     Wednesday: { type: [slotSchema] },
     Thursday: { type: [slotSchema] },
