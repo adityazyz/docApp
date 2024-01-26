@@ -1,10 +1,22 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 //WILL GET CURRENT day SLOT TIMING DATA FROM ROUTER (JSON STRING)  + email
 
 function editSlots() {
+  const emitterConfig = {
+    position: "top-right",
+    autoClose: 1500,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  };
 
   const router = useRouter();
   const [start, setStart] = useState([
@@ -272,7 +284,7 @@ function editSlots() {
       setStartIndexSelected(startIndex);
     }
     if(endIndex){
-      setEndIndexSelected(endIndex)
+      setEndIndexSelected(endIndex-1)
     }
   }
 
@@ -286,12 +298,14 @@ function editSlots() {
       axios.put("/api/updateSlots", finalObj)
       .then((response)=>{
         if(response.data.success === true){
+          toast.success("Slot edit successful.", emitterConfig)
           setTimeout(() => {
             router.push("/doctor/schedule-timings");
           }, 2000);
         }
       })
       .catch((error)=>{
+        toast.error("Some error occured", emitterConfig);
         console.log(error.message);
         setSlots([{ Start: "", End: "" }]);
       })
@@ -304,6 +318,13 @@ function editSlots() {
     updateOptions()
   
   }, [slots])
+
+  // if no email present send to schedule timings page
+useEffect(() => {
+  if(!router.query.email){
+    router.push("/doctor/schedule-timings");
+  }
+}, [])
 
   return (
     <div>
@@ -472,6 +493,18 @@ function editSlots() {
       </div>
       
       {/* // <!-- /Edit Time Slot Modal --> */}
+      <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
     </div>
   );
 }

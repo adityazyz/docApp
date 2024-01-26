@@ -1,11 +1,24 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 //WILL GET email and activeDay FROM ROUTER
 // send in add api as Email and name of day in Title case
 
 function addSlots() {
+  const emitterConfig = {
+    position: "top-right",
+    autoClose: 1500,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  };
+
   const router = useRouter();
   const start = [
     "6:00 am",
@@ -240,11 +253,13 @@ const handleSubmit = ()=>{
     .then((response)=>{
       if(response.data.success === true){
         setTimeout(() => {
+          toast.success("Slot added successfully.", emitterConfig)
           router.push("/doctor/schedule-timings");
         }, 2000);
       }
     })
     .catch((error)=>{
+      toast.error("Some error occured", emitterConfig);
       console.log(error.message);
       setSlots([{ Start: "", End: "" }]);
     })
@@ -255,6 +270,14 @@ const handleSubmit = ()=>{
 useEffect(() => {
   updateOptions()
 }, [slots]);
+
+// if no email present send to schedule timings page
+useEffect(() => {
+  if(!router.query.email){
+    router.push("/doctor/schedule-timings");
+  }
+}, [])
+
 
 
   return (
@@ -424,6 +447,18 @@ useEffect(() => {
       </div>
       
       {/* // <!-- /add Time Slot Modal --> */}
+      <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
     </div>
   );
 }
