@@ -110,7 +110,7 @@ function MyApp({ Component, pageProps }) {
         {/* // don't show normal navbar if admin page open  */}
         {!(router.pathname.split("/")[1] === "admin") && <Navbar />}
         {router.pathname.includes("/patient/") ||
-        router.pathname.includes("/doctor/") ? (
+        router.pathname.includes("/doctor/") && !router.pathname.includes("add-slots") && !router.pathname.includes("edit-slots") ? (
           <HomePath />
         ) : null}
 

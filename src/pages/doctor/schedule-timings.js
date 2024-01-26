@@ -3,6 +3,9 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Jwt from "jsonwebtoken";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 function ScheduleTimings() {
   const homeSidebarOpen = useSelector((state) => state.sidebar.homeSidebarOpen);
@@ -15,6 +18,17 @@ function ScheduleTimings() {
   const [deleteListener, setDeleteListener] = useState(false);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const emitterConfig = {
+    position: "top-right",
+    autoClose: 1500,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -44,12 +58,27 @@ function ScheduleTimings() {
       Email: currentEmail,
     };
     myObj[activeDay] = newData;
-    console.log(myObj);
+    
+    
+    // delete slot
+    axios.put("/api/updateSlots", myObj)
+      .then((response)=>{
+        if(response.data.success === true){
+          // show toast 
+          toast("Slot deleted.", emitterConfig);
 
-    setTimeout(()=>{
-      setShowDeleteModal(false);
-      setCurrentIndex(null);
-    },1000)
+          setTimeout(()=>{
+            setShowDeleteModal(false);
+            setCurrentIndex(null);
+          },500)
+        }
+      })
+      .catch((error)=>{
+        console.log(error.message);
+        setSlots([{ Start: "", End: "" }]);
+      })
+
+   
 
   };
 
@@ -317,6 +346,19 @@ function ScheduleTimings() {
           </div>
         </div>
       </div>}
+
+      <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
 
     </div>
   );

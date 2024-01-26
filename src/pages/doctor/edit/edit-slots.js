@@ -1,9 +1,11 @@
+import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 //WILL GET CURRENT day SLOT TIMING DATA FROM ROUTER (JSON STRING)  + email
 
 function editSlots() {
+
   const router = useRouter();
   const [start, setStart] = useState([
     "6:00 am",
@@ -159,11 +161,11 @@ function editSlots() {
 	  };
     // first get the data from the route string
     // example data below
-	console.log(router.query)
-    let data = [
-      { Start: "6:15 am", End: "7:00 am" },
-      { Start: "7:00 am", End: "7:30 am" },
-    ];
+
+  let data = [];
+    if(router.query.currentSlots){
+      data = JSON.parse(router.query.currentSlots);
+    setSlots(data);
 
     let startIndex = -1;
     let endIndex = -1;
@@ -189,6 +191,7 @@ function editSlots() {
 			setEndIndexSelected(endIndex);
 		}, 200);
     })
+    }
   }, []);
 
   const [slots, setSlots] = useState([{ Start: "", End: "" }]);
@@ -229,7 +232,78 @@ function editSlots() {
       };
       return newData;
     });
+    
   };
+
+  const updateOptions = () =>{
+
+      let startIndex = null;
+      let endIndex = null;
+    // for start
+    slots.map((slotItem)=>{ 
+      start.map((arrayItem, arrayIndex)=>{
+        // if slot Start item matched with start array item
+          if(slotItem["Start"] === arrayItem){
+            // if index above null set initial value
+            // else if the set start index is greated, make it smaller if you can
+            if((startIndex === null) || (startIndex > arrayIndex)){
+              startIndex = arrayIndex;
+            }
+          }
+      });
+    });
+
+    // for end
+    slots.map((slotItem)=>{ 
+      start.map((arrayItem, arrayIndex)=>{
+        // if slot Start item matched with start array item
+          if(slotItem["End"] === arrayItem){
+            // if index above null set initial value
+            // else if the set start index is greated, make it smaller if you can
+            if((startIndex === null) || (endIndex < arrayIndex)){
+              endIndex = arrayIndex;
+            }
+          }
+      });
+    });
+
+    // now set the selected index values if they are not null
+    if(startIndex){
+      setStartIndexSelected(startIndex);
+    }
+    if(endIndex){
+      setEndIndexSelected(endIndex)
+    }
+  }
+
+  const handleSubmit = ()=>{
+    if (router.query.email && router.query.activeDay){
+      let finalObj = {
+        Email : router.query.email
+      }
+      finalObj[router.query.activeDay] = slots
+  
+      axios.put("/api/updateSlots", finalObj)
+      .then((response)=>{
+        if(response.data.success === true){
+          setTimeout(() => {
+            router.push("/doctor/schedule-timings");
+          }, 2000);
+        }
+      })
+      .catch((error)=>{
+        console.log(error.message);
+        setSlots([{ Start: "", End: "" }]);
+      })
+    }else{
+      router.push("/doctor/schedule-timings");
+    }
+  }
+  
+  useEffect(() => {
+    updateOptions()
+  
+  }, [slots])
 
   return (
     <div>
@@ -258,6 +332,7 @@ function editSlots() {
                                   className="form-control"
                                   value={item["Start"]}
                                   onChange={(e) => {
+                                    // update options                              
                                     const newIndex = findIndex(
                                       start,
                                       e.target.value
@@ -377,7 +452,7 @@ function editSlots() {
                     type="submit"
                     className="btn btn-danger submit-btn"
                     onClick={() => {
-                      router.back();
+                      router.push("/doctor/schedule-timings");
                     }}
                   >
                     Cancel
@@ -385,9 +460,7 @@ function editSlots() {
                   <button
                     type="submit"
                     className="btn btn-primary submit-btn"
-                    onClick={() => {
-                      console.log(slots);
-                    }}
+                    onClick={handleSubmit}
                   >
                     Save Changes
                   </button>

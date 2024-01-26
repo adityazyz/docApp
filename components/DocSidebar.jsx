@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { changeUserType } from "../slices/userType";
 
+
 function DocSidebar() {
   const dispatch = useDispatch(); 
 
@@ -78,7 +79,7 @@ function DocSidebar() {
 
   return (
     <>
-    {load && data && currentUserType && (currentUserType === "Doctor" &&  homeSidebarOpen === true) && <div className={`z-20 ${router.pathname === "/" ? "mt-[83px]" : "mt-[160px] md:mt-[165px]"} absolute left-0 `}>
+    {load && data && currentUserType && (currentUserType === "Doctor" &&  homeSidebarOpen === true) && <div className={`z-20 ${(router.pathname === "/" || router.pathname.includes("edit-slots") || router.pathname.includes("add-slots")) ? "mt-[83px]" : "mt-[160px] md:mt-[165px]"} absolute left-0 `}>
       {(
         <div className="profile-sidebar ">
           <div className="widget-profile pro-widget-content">

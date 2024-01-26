@@ -1,7 +1,9 @@
+import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
-//WILL GET email FROM ROUTER
+//WILL GET email and activeDay FROM ROUTER
+// send in add api as Email and name of day in Title case
 
 function addSlots() {
   const router = useRouter();
@@ -147,11 +149,6 @@ function addSlots() {
     "11:00 pm",
   ];
 
-  useEffect(() => {
-    // NO NEED OF USEEFFECT HERE
-	console.log(router.query)
-  }, []);
-
   const [slots, setSlots] = useState([{ Start: "", End: "" }]);
   const [startIndexSelected, setStartIndexSelected] = useState(-1);
   const [endIndexSelected, setEndIndexSelected] = useState(-1);
@@ -166,7 +163,6 @@ function addSlots() {
         return i; // Return the index if the element is found
       }
     }
-
     return -1; // Return -1 if the element is not found
   };
 
@@ -192,9 +188,78 @@ function addSlots() {
     });
   };
 
+  const updateOptions = () =>{
+
+    let startIndex = null;
+    let endIndex = null;
+  // for start
+  slots.map((slotItem)=>{ 
+    start.map((arrayItem, arrayIndex)=>{
+      // if slot Start item matched with start array item
+        if(slotItem["Start"] === arrayItem){
+          // if index above null set initial value
+          // else if the set start index is greated, make it smaller if you can
+          if((startIndex === null) || (startIndex > arrayIndex)){
+            startIndex = arrayIndex;
+          }
+        }
+    });
+  });
+
+  // for end
+  slots.map((slotItem)=>{ 
+    start.map((arrayItem, arrayIndex)=>{
+      // if slot Start item matched with start array item
+        if(slotItem["End"] === arrayItem){
+          // if index above null set initial value
+          // else if the set start index is greated, make it smaller if you can
+          if((startIndex === null) || (endIndex < arrayIndex)){
+            endIndex = arrayIndex;
+          }
+        }
+    });
+  });
+
+  // now set the selected index values if they are not null
+  if(startIndex){
+    setStartIndexSelected(startIndex);
+  }
+  if(endIndex){
+    setEndIndexSelected(endIndex-1)
+  }
+}
+
+const handleSubmit = ()=>{
+  if (router.query.email && router.query.activeDay){
+    let finalObj = {
+      Email : router.query.email
+    }
+    finalObj[router.query.activeDay] = slots
+
+    axios.put("/api/updateSlots", finalObj)
+    .then((response)=>{
+      if(response.data.success === true){
+        setTimeout(() => {
+          router.push("/doctor/schedule-timings");
+        }, 2000);
+      }
+    })
+    .catch((error)=>{
+      console.log(error.message);
+      setSlots([{ Start: "", End: "" }]);
+    })
+  }else{
+    router.push("/doctor/schedule-timings");
+  }
+}
+useEffect(() => {
+  updateOptions()
+}, [slots]);
+
+
   return (
     <div>
-      {/* /* // <!-- Edit Time Slot Modal --> */}
+      {/* /* // <!-- add Time Slot Modal --> */}
       <div className="h-auto pb-8 md:p-0 sm:h-[100vh] w-[100vw]  mt-10">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
@@ -219,6 +284,7 @@ function addSlots() {
                                   className="form-control"
                                   value={item["Start"]}
                                   onChange={(e) => {
+                                    // update options                              
                                     const newIndex = findIndex(
                                       start,
                                       e.target.value
@@ -272,7 +338,7 @@ function addSlots() {
                                       endIndexSelected === -1 ||
                                       endIndexSelected < newIndex
                                     ) {
-                                      setEndIndexSelected(newIndex);
+                                      setEndIndexSelected(newIndex-1);
                                     }
                                     handleSlotChange(
                                       index,
@@ -338,7 +404,7 @@ function addSlots() {
                     type="submit"
                     className="btn btn-danger submit-btn"
                     onClick={() => {
-                      router.back();
+                      router.push("/doctor/schedule-timings");
                     }}
                   >
                     Cancel
@@ -346,9 +412,7 @@ function addSlots() {
                   <button
                     type="submit"
                     className="btn btn-primary submit-btn"
-                    onClick={() => {
-                      console.log(slots);
-                    }}
+                    onClick={handleSubmit}
                   >
                     Save Changes
                   </button>
@@ -359,7 +423,7 @@ function addSlots() {
         </div>
       </div>
       
-      {/* // <!-- /Edit Time Slot Modal --> */}
+      {/* // <!-- /add Time Slot Modal --> */}
     </div>
   );
 }
