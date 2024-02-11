@@ -7658,6 +7658,16 @@ html.menu-opened body {
 		width: 100%;
 		margin-bottom: 15px;
 	}
+
+	.custom-view-pro-button {
+		width: 100%;
+		margin-bottom: 15px;
+
+	}
+	.custom-view-pro-button:focus {
+		background: #20c0f3; 
+	color: #fff;
+	}
 	.clinic-booking a.apt-btn {
 		width: 100%;
 	}

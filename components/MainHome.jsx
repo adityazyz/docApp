@@ -1,13 +1,66 @@
-import React, { useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const MainHome = () => {
+  const homeSidebarOpen = useSelector((state) => state.sidebar.homeSidebarOpen);
+  const [fieldValue, setFieldValue] = useState("");
+  const router = useRouter();
 
-  const homeSidebarOpen = useSelector((state)=>state.sidebar.homeSidebarOpen);
+  const [options, setOptions] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const performSearch = () =>{
+    if (fieldValue.length > 0) {
+      router.push(
+        {
+          pathname: "/search-doctors",
+          query: { keyword: fieldValue },
+        },
+        "/search-doctors"
+      ); 
+    }
+  }
+
+  const handleOptionClick = (option) => {
+    setFieldValue(option)
+    setShowDropdown(false);
+    // if option clicked, directly search using it
+    router.push(
+      {
+        pathname: "/search-doctors",
+        query: { keyword: option },
+      },
+      "/search-doctors"
+    );
+    
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      performSearch()
+    }
+  };
+
+  useEffect(() => {
+    axios
+      .get("/api/specGet")
+      .then((response) => {
+        function extractFieldValues(arr, fieldName) {
+          return arr.map((obj) => obj[fieldName]);
+        }
+        setOptions(extractFieldValues(response.data.data, "name"));
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+
+  }, [])
   
-  return (
-    <> 
 
+  return (
+    <>
       <div className={`${homeSidebarOpen ? "ml-2 md:ml-[300px]" : "ml-2"}`}>
         <section className="flex flex-col bg-[#f8f8f8] items-center mt-[82px] h-[90vh]">
           <div className="flex flex-col items-start md:items-center mt-[50px] px-4">
@@ -61,19 +114,62 @@ const MainHome = () => {
                     />
                   </svg>
                 </span>
-                <input
-                  className="focus:outline-none w-[70vw] sm:w-[400px] py-2 px-8 rounded-lg border border-[#9B9D9B] "
-                  type="text"
-                  placeholder="Search doctors"
-                />
+                <div className="relative inline-block">
+                  <input
+                    className="focus:outline-none w-[70vw] sm:w-[400px] py-2 px-8 rounded-lg border border-[#9B9D9B] "
+                    type="text"
+                    value={fieldValue}
+                    onChange={(e) => {
+                      setFieldValue(e.target.value); 
+                      setShowDropdown(true);
+
+                    }}
+                    onKeyDown={handleKeyPress}
+                    placeholder="Search doctors"
+
+                    onFocus={()=>{
+                      if(showDropdown != true)
+                      {
+                        setShowDropdown(true)
+                      }}
+                    }
+                    onBlur={()=>{
+                      if(showDropdown != false)
+                      {
+                        setTimeout(() => {
+                          setShowDropdown(false)
+                        }, 100);
+                      }}
+                    }
+                  />
+
+                  {showDropdown && (
+                    <div className="absolute mt-1 w-full bg-white rounded-md shadow-lg">
+                      <ul className="py-1">
+                        {options.map((option, index) => (
+                          <li
+                            key={index}
+                            className="px-4 py-2 cursor-pointer hover:bg-gray-200"
+                            onClick={() => handleOptionClick(option)}
+                          >
+                            {option}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </div>
               <p className="text-[14px] text-[#5a5d5c] ">
-                Search based on speciality Ex : Dental or Sugar Check up etc
+                Search based on speciality Ex : Dentist, Cardiologists etc
               </p>
             </div>
 
             <div>
-              <button className="bg-green-600 p-2 rounded-md ">
+              <button
+                className="bg-green-600 p-2 rounded-md "
+                onClick={performSearch}
+              >
                 <svg
                   width="25px"
                   viewBox="0 0 24 24"

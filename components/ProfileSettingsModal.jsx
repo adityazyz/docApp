@@ -1462,9 +1462,6 @@ function ProfileSettingsModal({ userEmail, type }) {
           theme="light"
         />
       </div>
-
-      {/* // for phone no code  */}
-      <script src="/build/js/intlTelInput.min.js"></script>
     </>
   );
 }

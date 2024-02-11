@@ -1,15 +1,15 @@
-import PatientData from "../../../models/PatientData"
+// search doctors based on the Specializations under Service
+
+import DoctorData from "../../../models/DoctorData"
 import connectDb from "../../../middleware/mongoose";
- 
 
 const handler = async (req, res) => {
   if (req.method === "GET") {
+    const spec = req.query.spec;
+
     try {
-      //
-      const email = req.query.email;
-    // find all Admins for noe
-        let data = await PatientData.findOne({Email : email});
-        res.status(200).json(data);
+        const result = await DoctorData.find({ 'Service.Specializations': spec });
+        res.status(200).json({result});
          
     } catch (error) {
       res.status(400).json({ Error: "Internal Server error." });

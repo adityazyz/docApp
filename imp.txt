@@ -1,79 +1,35 @@
 setDetails({...details,[e.target.name]:e.target.value});
-
-// TODO later
-{ appply validationssssss on profile page...fields} 
-{non-unique id in profile page..datepickers (experience field)}
-{+ MAKE SEARCH DOC FEATURE }
-+++ make doc profile such that, it matches doc spec with available speciality before showing
-
+---{ appply validationssssss on profile page...fields} 
+---{non-unique id in profile page..datepickers (experience field)}
+===== show only active doc accounts =====
 
 -----------------------------------------------------------------------------------------
 // TODO  -----
-i) done :)
-  768 px 
----------------
+started but incomplete -> 
 
-{make doc profile such, it matches doc spec with available spec before showing} !!!!!
-ii) Search doctor feature 
-{
-  1) searchbar (search based on speciality)
-  { load spec list to show as dropdown suggestion while typing }
-  2) show doc cards after search, 
-  3) show doc ProfilePicture
-  4) show book appointment button
-}
------------------
+  1) Booking success ( add details after payment confirmation)
+  [ take to pt dashboard if reloaded or pressed putton or view invoice]
 
-iii) Appointment feature  <<<<<<<<
-{
+  2) bookings ( add the feature to filter and load confirmed appointments (to disable slots))
 
-1) ask doc to schedule appointments for everyweekday
-2) take patients to booking page from their profile
-3) book appontment, get appointment details, add shipping details and proceed to pay
-}
+  3) Invoice view -> reflect data based upon the appointment id 
+
+  4) Doc Profile :
+  {make doc profile such, it matches doc spec with available spec before showing,
+   if spec on doc profile is removed, remove it from doc account as well} !!!!!
+   (should happen when that doctor logs in or that doctors, profile is opened by patient)
 
 
+Need to start -> 
+
+  1) doctor dashboard ( show todays and future appointments)
+  2) patient dashboard ( show all the appontment made, from today and future)
+                      ( also add feature too see past appointment ) 
 
 
+------ functionssss --------------------------------------
 
-
-
-
-
-
-
-
-
-
-
------- functionssss ----------
-
-1) for date and time 
-
-const convertDateTime = (dateTime) => {
-  const dateObj = new Date(dateTime);
-  
-  const options = {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true
-  };
-  
-  let inFormat = dateObj.toLocaleDateString('en', options);
-  let arr = inFormat.split(",");
-  let date = `${arr[0]}${arr[1]}`;
-  // also removed space from index 0 from time
-  let timeSplit = arr[2].split(" ")
-  let time = `${timeSplit[1]} ${timeSplit[2]}` 
-  
-  return `${date} ${time}`
-
-}
-
-2) for filtering the data 
+1) for filtering the data 
 
 function filterObjectsByFields(objects, fields) {
   return objects.map(object => {
@@ -87,7 +43,7 @@ function filterObjectsByFields(objects, fields) {
   });
 }
 
-3) to merge 3 fields ( for fname, lname and profile picture);
+2) to merge 3 fields ( for fname, lname and profile picture);
 
 function combineFields(data) {
   let myArr = data;
@@ -106,24 +62,3 @@ function combineFields(data) {
 
 ==============================================================================
 
-HOW APPOINTMENT SYSTEM IS GONNA WORK
-
-data to be stored => {
-  doctorId : ,
-  patientId : ,
-  totalTime : (total time of app.),
-  totalAmount : (calculated per minute  {as per the specified currency}), 
-  dateAndTime : (date & time in understandable format),
-  status : (pending/rejected/approved)
-}
-----------------------------------------------------------------
-
-
-
-1 -> make patient page working in admin ....(table )
-2 -> add doctor feature !
-3 -> rename paths
-
-4 -> make admin side responsive !!
-
-----------------------------------------------------------------

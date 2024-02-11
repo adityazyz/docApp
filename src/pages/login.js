@@ -102,7 +102,7 @@ function login() {
             }
 
             setTimeout(() => {
-              router.push("/");
+              router.back();
             }, 1000);
           } else if (response.data.success === false) {
             console.log(response.data.error);
