@@ -45,6 +45,7 @@ function ScheduleTimings() {
         })
         .catch((error) => {
           console.log(error.message);
+          setData(-1)
         });
     }
   }, [deleteListener]);
@@ -76,6 +77,7 @@ function ScheduleTimings() {
       .catch((error)=>{
         console.log(error.message);
         setSlots([{ Start: "", End: "" }]);
+        
       })
 
    
@@ -226,9 +228,9 @@ function ScheduleTimings() {
                             <h4 className="card-title d-flex justify-content-between">
                               <span>Time Slots</span>
 
-                              {data && (
+                              
                                 <>
-                                  {data[activeDay].length > 0 ? (
+                                  {data && data[activeDay]?.length > 0 ? (
                                     <button
                                       className="edit-link text-blue-400"
                                       onClick={() => {
@@ -255,7 +257,7 @@ function ScheduleTimings() {
                                     </button>
                                   )}
                                 </>
-                              )}
+                            
                             </h4>
 
                             {/* <!-- Slot List --> */}
@@ -289,7 +291,7 @@ function ScheduleTimings() {
                                 )}
                               </div>
                             )}
-                            {!data && <div>Unable to fetch data</div>}
+                            {data && data === -1 && <div>Unable to fetch data</div>}
 
                             {/* <!-- /Slot List --> */}
                           </div>

@@ -25,6 +25,10 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
 
+    let token = localStorage.getItem("token");
+    let decryptedToken = Jwt.decode(token, process.env.JWT_SECRET);
+    console.log(decryptedToken)
+
     const handleBeforeUnload = (event) => {
       event.preventDefault();
 
@@ -33,6 +37,7 @@ function MyApp({ Component, pageProps }) {
 
       if (token) {
         let decryptedToken = Jwt.decode(token, process.env.JWT_SECRET);
+        
 
         const updateData = {
           Email: decryptedToken.Email,
@@ -104,8 +109,14 @@ function MyApp({ Component, pageProps }) {
           router.pathname != "/admin-register" && <AdminPaths />}
 
         {/* // profile sidebars ----  */}
-        {!router.pathname.includes("/admin/")  ? <PtSidebar /> : null}
-        {!router.pathname.includes("/admin/")  ? <DocSidebar /> : null} 
+        {!router.pathname.includes("/admin/") 
+        && !router.pathname.includes("/invoice-view")
+        && !router.pathname.includes("/booking-success")
+          ? <PtSidebar /> : null}
+        {!router.pathname.includes("/admin/") 
+        && !router.pathname.includes("/invoice-view")
+        && !router.pathname.includes("/booking-success")
+          ? <DocSidebar /> : null} 
 
         {/* // don't show normal navbar if admin page open  */}
         {!(router.pathname.split("/")[1] === "admin") && <Navbar />}

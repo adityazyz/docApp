@@ -57,6 +57,7 @@ const handler = async (req, res) => {
         await c.save();
         res.status(200).json({success : true});
       } else {
+        // newBody["PatientId"] = `${newBody.FirstName.slice(3)}${newBody.Mobile.Number.slice(3)}`;
         let c = new PatientData(newBody);
         await c.save(); 
         res.status(200).json({success : true});

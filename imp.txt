@@ -1,30 +1,29 @@
 setDetails({...details,[e.target.name]:e.target.value});
 ---{ appply validationssssss on profile page...fields} 
 ---{non-unique id in profile page..datepickers (experience field)}
-===== show only active doc accounts =====
-
------------------------------------------------------------------------------------------
-// TODO  -----
-started but incomplete -> 
-
-  1) Booking success ( add details after payment confirmation)
-  [ take to pt dashboard if reloaded or pressed putton or view invoice]
-
-  2) bookings ( add the feature to filter and load confirmed appointments (to disable slots))
-
-  3) Invoice view -> reflect data based upon the appointment id 
-
-  4) Doc Profile :
+---Doc Profile :
   {make doc profile such, it matches doc spec with available spec before showing,
    if spec on doc profile is removed, remove it from doc account as well} !!!!!
    (should happen when that doctor logs in or that doctors, profile is opened by patient)
 
+--
+check for doc account activity when searching 
+--
+===== show only active doc accounts =====
 
-Need to start -> 
 
-  1) doctor dashboard ( show todays and future appointments)
-  2) patient dashboard ( show all the appontment made, from today and future)
-                      ( also add feature too see past appointment ) 
+
+
+-----------------------------------------------------------------------------------------
+// TODO  --------------------------------------------------------------------------------
+current --->>>
+
+
+2) -> make patient-profile page
+
+-----------
+
+
 
 
 ------ functionssss --------------------------------------
@@ -59,6 +58,15 @@ function combineFields(data) {
   return myArr;
 }
 
+ <span class="badge badge-pill bg-danger-light">
+                                  Cancelled
+                                </span>
+
+<span class="badge badge-pill bg-warning-light">
+                                  Pending
+</span>
+
 
 ==============================================================================
+
 

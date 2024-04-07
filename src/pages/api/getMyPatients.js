@@ -1,14 +1,18 @@
-import ScheduleTiming from "../../../models/ScheduleTiming"
+import MyPatients from "../../../models/MyPatients" 
 import connectDb from "../../../middleware/mongoose";
 
 
 const handler = async (req, res) => {
   if (req.method === "GET") {
     try {
-        let data = await ScheduleTiming.find({Email : req.query.email});
-          res.status(200).json(data[0]);
-      
+        // req.query will contain PatientEmail  
+        // two fields in this schema are PatientEmail and DoctorEmail
 
+        let data = await MyPatients.findOne({
+            DoctorEmail : req.query.DoctorEmail
+        });
+        res.status(200).json(data);
+         
     } catch (error) {
       res.status(400).json({ Error: "Internal Server error." });
     }

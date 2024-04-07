@@ -1286,13 +1286,13 @@ function ProfileSettingsModal({ userEmail, type }) {
                                           ? "Award Name"
                                           : index === 1
                                           ? "Year"
-                                          : "Award By"}
+                                          : "Award Details"}
                                       </label>
-                                      <input
+                                       <input
                                         name={field}
                                         type="text"
                                         value={awardData[i][field]}
-                                        className="form-control"
+                                        className={`form-control ${index === 2 ? " w-80" : null}`}
                                         onChange={(e) => {
                                           handleAwardChange(
                                             i,

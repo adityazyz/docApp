@@ -173,7 +173,7 @@ function AdminModal() {
             
               <h1 className="card-title">Personal Details</h1>
             <>
-              <form>
+              <form> 
                 <div className="row form-row">
                   {/* // profile picture  */}
                 <div className="col-12">

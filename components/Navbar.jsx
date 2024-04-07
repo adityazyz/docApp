@@ -96,11 +96,12 @@ function Navbar() {
               </span>
             </div> : null}
             <div href="index.html" className="ml-[50px] navbar-brand logo">
-              <img
+              {/* // brand logo ------- */}
+              {/* <img
                 src="/assets/img/logo.png"
                 className="img-fluid"
                 alt="Logo"
-              />
+              /> */}
             </div>
             </div>
           </div>

@@ -2,24 +2,11 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import DocCard from "../../components/DocCard";
+import Jwt from "jsonwebtoken";
 
 function booking() {
-  const disabledSlots = [
-    {
-      time: {
-        Start: "10:00 am",
-        End: "10:30 am",
-      },
-      day: new Date(),
-    },
-    {
-      time: {
-        Start: "12:30 pm",
-        End: "1:00 pm",
-      },
-      day: new Date(),
-    },
-  ];
+
+  const [disabledSlots, setDisabledSlots] = useState([]);
 
   const [data, setData] = useState();
   const [days, setDays] = useState([]);
@@ -96,40 +83,36 @@ function booking() {
     return `${day}-${month}-${year}`;
   }; 
 
-  const fetchScheduleDetails = (myData) =>{
+  const fetchScheduleDetails = (email) =>{
     // fetch schedule day details of the doctor
     axios
-    .get(`/api/getTimings?email=${myData.Email}`)
+    .get(`/api/getTimings?email=${email}`)
     .then((response) => {
-      setSlots(response.data);
+      setSlots(response.data); 
     })
     .catch((error) => {
       console.log(error.message);
     });
+
   }
 
   useEffect(() => {
-    if(!router.query.data){
-      const localData = localStorage.getItem("data");
-      if(localData){
-        const myData = JSON.parse(localData);
-        setData(myData);
-        fetchScheduleDetails(myData);
 
-      }else{
-        router.back();
-      }
-    }else{
-      localStorage.setItem("data",router.query.data);
-      const myData = JSON.parse(router.query.data);
-        setData(myData);
-        fetchScheduleDetails(myData);
+  if (router.query.doctorEmail) {
+    axios
+      .get(`/api/getDoctors?email=${router.query.doctorEmail}`)
+      .then((response) => {
+        setData(response.data);
+        fetchScheduleDetails(router.query.doctorEmail);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
   }
-
 
     // setting days array
     const currentDate = new Date();
-    const next28Days = [];
+    const next28Days = []; 
     for (let i = 0; i < 28; i++) {
       const nextDate = new Date(currentDate);
       nextDate.setDate(currentDate.getDate() + i);
@@ -138,7 +121,31 @@ function booking() {
     setDays(next28Days);
     setWeekNumber(1);
 
-    // fetch all appointments related to that doc, and filter for appointments with date objects equal or greater than him...and check for accepted appointment schedules
+    // fetch already booked slots and disable them
+    let token = localStorage.getItem("token");
+    if (token) {
+      let decryptedToken = Jwt.decode(token, process.env.JWT_SECRET);
+      if (decryptedToken.UserType === "Patient") {
+        axios.get(`/api/getDisabledSlotsAppointments?email=${decryptedToken.Email}`)
+        .then((response)=>{ 
+           let disabledArray = []
+           response.data.map((item)=>{
+            let myObj = {
+              day : new Date(item["FollowUpDate"]),
+              time : item["Time"]
+            }
+            disabledArray.push(myObj);
+           })
+
+           // set disabledSlots value
+          setDisabledSlots(disabledArray);
+        })
+        .catch((error)=>{
+          console.log(error.message);
+        })
+      }
+    }
+        
   }, []);
 
   useEffect(() => {
@@ -235,23 +242,19 @@ function booking() {
                             currentDays.map((item, index) => {
                               if (slots[getDateInfo(item, "day")].length > 0) {
                                 return (
-                                  <li key={`myslot-${index}`}>
+                                  <li key={`myslot-${index}out`}>
                                     {slots[getDateInfo(item, "day")].map(
                                       (data, i) => {
                                         // selected on a
                                         return (
                                           <a
-                                            key={`${index}-${i}`}
+                                            key={`${index}-${i}in`}
                                             className={`timing
                                 ${
                                   disabledSlots.some(
                                     (ditem) =>
-                                      getFullDate(ditem["day"]) ===
-                                      getFullDate(item)
-                                  ) &&
-                                  disabledSlots.some(
-                                    (ditem) =>
-                                      ditem["time"]["Start"] === data["Start"]
+                                      (getFullDate(ditem["day"]) ===
+                                      getFullDate(item)) && (ditem["time"]["Start"] === data["Start"])
                                   )
                                     ? "bg-white border-0 border-none pointer-events-none"
                                     : null
@@ -346,8 +349,10 @@ function booking() {
                         pathname: "/checkout",
                         query: {
                           data: JSON.stringify({
-                            Country : data.Address.Country,
+                            Address : data.Address.Address,
                             City : data.Address.City,
+                            State : data.Address.State,
+                            Country : data.Address.Country,
 
                             DoctorName: `Dr. ${data.FirstName} ${data.LastName}`,
                             DoctorProfilePicture: data.ProfilePicture,

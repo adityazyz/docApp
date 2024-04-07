@@ -1,12 +1,26 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import Jwt from "jsonwebtoken";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // 3 types, half, full, booking
 // half- to show just card
 // full - to show in full profile
 // booking - to show on booking
 function DocCard({data,type}) {
+  const emitterConfig = {
+    position: "top-right",
+    autoClose: 1500,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  };
+
     // all major data coming from parent component 
     // extra useState variable for fields we need from api are reated below
     const [rating, setRating] = useState(-1);
@@ -17,6 +31,9 @@ function DocCard({data,type}) {
     const router = useRouter();
     // store all degree from education in an array
     const [degrees, setDegrees] = useState("");
+
+    const [isFav, setIsFav] = useState(false);
+    const [patientEmail, setPatientEmail] = useState();
 
     useEffect(() => {
       // setting degrees
@@ -35,6 +52,59 @@ function DocCard({data,type}) {
       });
 
     }, [])
+
+    // for favourite doc
+    useEffect(() => {
+      if(type === "full"){
+       //  just update the last visit
+     let token = localStorage.getItem("token");
+
+     if (token) {
+       let decryptedToken = Jwt.decode(token, process.env.JWT_SECRET);
+       if(decryptedToken.UserType === "Patient"){
+        setPatientEmail(decryptedToken.Email);
+        axios.get(`/api/getFavDoctors?PatientEmail=${decryptedToken.Email}`)
+       .then((response)=>{
+        if(response.data && response.data.DoctorEmail.includes(data.Email)){
+          setIsFav(true);
+        }
+       })
+       .catch((error)=>{
+        console.log(error.message);
+       })
+       }
+      }
+      }
+    }, [])
+    
+    const toggleFavDoctor = () =>{
+      if(patientEmail){
+        if(isFav === false){
+          axios.put("/api/addFavDoctors",{PatientEmail : patientEmail, email : data.Email})
+          .then((response)=>{
+            if(response.data.success === true){
+              setIsFav(true);
+            }
+          })
+          .catch((error) => {
+            console.log(error.message);
+          });
+
+        }else{
+          axios.put("/api/removeFavDoctors",{PatientEmail : patientEmail, email : data.Email})
+          .then((response)=>{
+            if(response.data.success === true){
+              setIsFav(false);
+            }
+          })
+          .catch((error) => {
+            console.log(error.message);
+          });
+        }
+      }else{
+        toast.error("Login as patient to set this doctor as Favourite.", emitterConfig);
+      }
+    }
     
   return (
     <>
@@ -64,7 +134,7 @@ function DocCard({data,type}) {
               </p>}
               
               {/* // speciality  */}
-              {data.Service.Specializations.length > 0 && type != "booking" && <div className="flex my-2">
+              {data.Service.Specializations.length > 0 && type != "booking" && <div className="flex my-2 justify-center">
                 {specs.map((item,index)=>{
                   if(data.Service.Specializations.includes(item["name"]) && index < 5){
                     return <div className="flex flex-row justify-center items-center mr-3" key={`spezz-${index}`}>
@@ -160,7 +230,13 @@ function DocCard({data,type}) {
             </div> 
             <div className="clinic-booking"> 
             {type === "full" && <div className="doctor-action ">
-              <button className="btn btn-white fav-btn mx-1">
+
+              {/* // action buttons  */} 
+              <button 
+              onClick={toggleFavDoctor}
+              className={`btn  mx-1
+              ${isFav===true? "bg-blue-400 text-white hover:bg-red-600 hover:text-white" : "border border-1 "}
+              hover:bg-blue-300 hover:text-white`}>
                 <i className="far fa-bookmark"></i>
               </button>
               <button className="btn btn-white msg-btn mx-1">
@@ -187,7 +263,7 @@ function DocCard({data,type}) {
               <button className="w-[100%]   mb-[15px] py-3 rounded-[5px] bg-[#20c0f3] text-white hover:bg-cyan-600" href="booking.html"
 										onClick={()=>{
 											router.push(
-												{ pathname: "/booking", query: { data: JSON.stringify(data) } },
+												{ pathname: "/booking", query: { doctorEmail: data.Email } },
 												"/booking"
 											  )
 										}}
@@ -197,6 +273,18 @@ function DocCard({data,type}) {
         </div>
       </div>
     </div>}
+    <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
     </>
   );
 }

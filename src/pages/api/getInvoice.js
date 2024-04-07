@@ -1,14 +1,15 @@
-import ScheduleTiming from "../../../models/ScheduleTiming"
+import Invoice from "../../../models/Invoice"
 import connectDb from "../../../middleware/mongoose";
-
+ 
 
 const handler = async (req, res) => {
   if (req.method === "GET") {
     try {
-        let data = await ScheduleTiming.find({Email : req.query.email});
-          res.status(200).json(data[0]);
       
-
+    // find all Admins for noe
+        let data = await Invoice.findById(req.query.InvoiceId);
+        res.status(200).json(data);
+         
     } catch (error) {
       res.status(400).json({ Error: "Internal Server error." });
     }

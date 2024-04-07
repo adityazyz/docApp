@@ -4,6 +4,9 @@ import Jwt from "jsonwebtoken";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+ 
+//////////DISCOUNT
+const discount = 0; // in %
 
 function checkout() {
   const gateways = ["Paypal", "Stripe", "Paytm"];
@@ -21,9 +24,10 @@ function checkout() {
   const router = useRouter();
   const [data, setData] = useState();
 
+  const [invoiceDetails, setInvoiceDetails] = useState();
+
   const [isPatientLoggedIn, setIsPatientLoggedIn] = useState(false);
   const [patientDetailsObj, setPatientDetailsObj] = useState({});
-  
 
   const [selectedGateway, setSelectedGateway] = useState();
   const [tncRead, setTncRead] = useState(false);
@@ -64,44 +68,65 @@ function checkout() {
   };
 
   const checkLoginStatus = (type) => {
-	let token = localStorage.getItem("token");
+    let token = localStorage.getItem("token");
     if (token) {
       let decryptedToken = Jwt.decode(token, process.env.JWT_SECRET);
-	  if(decryptedToken.UserType === "Patient"){
-		setIsPatientLoggedIn(true);
-		axios.get(`/api/getPatients?email=${decryptedToken.Email}`)
-		.then((response)=>{
-			//set initial input fields 
-			setFirstName(response.data.FirstName);
-			setLastName(response.data.LastName);
-			setEmail(response.data.Email);
-			setPhone(response.data.Mobile.Number);
+      if (decryptedToken.UserType === "Patient") {
+        setIsPatientLoggedIn(true);
+        axios
+          .get(`/api/getPatients?email=${decryptedToken.Email}`)
+          .then((response) => {
+            //set initial input fields
+            setFirstName(response.data.FirstName);
+            setLastName(response.data.LastName);
+            setEmail(response.data.Email);
+            setPhone(response.data.Mobile.Number);
 
-			// setting patient details obj
-			const ptObj = {
-				PatientEmail : response.data.Email,
-				PatientProfilePicture : response.data.ProfilePicture,
-				PatientName : `${response.data.FirstName} ${response.data.LastName}`,
-				PatientId : response.data.PatientId
-			}
-			setPatientDetailsObj(ptObj);
+            // invoice details
+            setInvoiceDetails({
+              PatientName: `${response.data.FirstName} ${response.data.LastName}`,
+              PatientAddress: {
+                Address:
+                  response.data.Address === "" ? " " : response.data.Address,
+                City: response.data.City === "" ? " " : response.data.City,
+                State: response.data.State === "" ? " " : response.data.State,
+                Country:
+                  response.data.Country === "" ? " " : response.data.Country,
+              },
+            });
 
-		})
-		.catch((error)=>{
-			console.log(error.message);
-		})
-		return true;
-	  }else{
-		if(type != "Initial"){toast("You are loggedin as a Doctor.", emitterConfig);}
-		return false;
-	  }
-    }else{
-		if(type != "Initial"){toast("Login to continue.");}
-		return false;
-	}
-  }
+            // setting patient details obj
+            const ptObj = {
+              PatientEmail: response.data.Email,
+              PatientProfilePicture: response.data.ProfilePicture,
+              PatientName: `${response.data.FirstName} ${response.data.LastName}`,
+              PatientId: response.data.UserName,
+              PatientMobile : response.data.Mobile.Number,
+              PatientAddress : {
+                City : response.data.City,
+                State : response.data.State
+              }
+            };
+            setPatientDetailsObj(ptObj);
+          })
+          .catch((error) => {
+            console.log(error.message);
+          });
+        return true;
+      } else {
+        if (type != "Initial") {
+          toast("You are loggedin as a Doctor.", emitterConfig);
+        }
+        return false;
+      }
+    } else {
+      if (type != "Initial") {
+        toast("Login to continue.");
+      }
+      return false;
+    }
+  };
 
- 
   useEffect(() => {
     // getting doctor data
     if (!router.query.data) {
@@ -119,39 +144,144 @@ function checkout() {
 
     // getting patient data on load // or asking to login/signup
     checkLoginStatus("Initial");
-
   }, []);
 
-  const makePayment = () => {
-	let initialObj = {...data};
-	// remove unwanted keys
-	delete initialObj.City 
-	delete initialObj.Country
-	// add wanted keys
-	initialObj.ModeOfPayment = selectedGateway;
-	initialObj.TransactionId = Math.floor(Math.random() * 10000000000000).toString();//random
-	initialObj.Purpose = purpose;
+  const bookAppointment = (invoiceId) =>{
+    // ----- GENERATE APPOINTMENT ------
+    // it is called inside generateInvoicen
+
+    let initialObj = { ...data };
+    // remove unwanted keys
+    delete initialObj.City;
+    delete initialObj.Country;
+    delete initialObj.Address;
+    delete initialObj.State;
+
+    // add wanted keys
+    initialObj.InvoiceId = invoiceId;
+    initialObj.ModeOfPayment = selectedGateway;
+    initialObj.TransactionId = Math.floor(
+      Math.random() * 10000000000000
+    ).toString(); //random
+
+    //if discount applicable ...reduce total amount
+    initialObj.TotalFee =
+      discount != 0
+        ? (discount / 1000) * initialObj.TotalFee
+        : initialObj.TotalFee;
+    initialObj.Purpose = purpose;
     // convert date string to obj
-	initialObj.FollowUpDate = new Date(initialObj.FollowUpDate);
+    initialObj.FollowUpDate = new Date(initialObj.FollowUpDate); 
+    // combine two obj into one
+    const finalObj = { ...patientDetailsObj, ...initialObj };
+  //   // go ahead and book an appointment, once the payment is confirmed
+    setTimeout(() => {
+      axios
+        .put("/api/bookAppointment", finalObj)
+        .then((response) => {
+          if (response.data.success === true) { 
+            toast.success("Appointment Booked!");
+            router.push(
+              { pathname: "/booking-success", query: { data: JSON.stringify({
+                DoctorName : data.DoctorName, FollowUpDate : data.FollowUpDate, StartTime : data.Time.Start , EndTime : data.Time.End, InvoiceId : invoiceId
+              }) } },
+              "/booking-success"
+            )
+          }
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    }, 4000);
+  }
 
+  const generateInvoice = () => {
 
-	toast("Payment in progress.")
-	// combine two obj into one
-	const finalObj = {...patientDetailsObj, ...initialObj}
+    // ----- GENERATE INVOICE -------
+    // this functions calls book appointment internally after generation invoice
 
-	// go ahead and book an appointment, once the payment is confirmed
-	setTimeout(() => {
-		axios.put("/api/bookAppointment",finalObj)
-	.then((response)=>{
-		if(response.data.success === true){
-			toast.success("Appointment Booked!")
-		}; 
-	})
-	.catch((error)=>{
-		console.log(error.message);
-	})
-	}, 4000);
+    let invoiceDocData = {
+      DoctorName: data.DoctorName,
+      DoctorAddress: {
+        Address: data.Address,
+        City: data.City,
+        State: data.State,
+        Country: data.Country,
+      },
+    };
 
+    let finalInvoiceObj = { ...invoiceDetails, ...invoiceDocData };
+    finalInvoiceObj.PaymentDetails = {
+      ModeOfPayment: selectedGateway,
+      TransactionId: Math.floor(Math.random() * 10000000000000).toString(), //random
+    };
+
+    finalInvoiceObj.GeneralDetails = [
+      {
+        Service: "Consultation",
+        Amount: data.ConsultingFee,
+      },
+      {
+        Service: "Booking",
+        Amount: data.BookingFee,
+      },
+    ];
+
+    finalInvoiceObj.Subtotal = data.TotalFee;
+    finalInvoiceObj.Discount = discount;
+    finalInvoiceObj.Total =
+      discount != 0 ? (discount / 1000) * data.TotalFee : data.TotalFee;
+
+    axios
+      .post("/api/createInvoice", finalInvoiceObj)
+      .then((response) => {
+        if (response.data.success === true) {
+          bookAppointment(response.data.data._id);
+        }
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  };
+
+  const makePayment = (e) => {
+    e.preventDefault();
+
+    if (checkLoginStatus() === true) {
+      if (
+        firstName.length === 0 ||
+        lastName.length === 0 ||
+        email.length === 0 ||
+        phone.length === 0 ||
+        purpose.length === 0
+      ) {
+        toast.error("Please fill all the fields.", emitterConfig);
+      } else {
+        if (
+          firstName.length < 3 ||
+          lastName.length < 3 ||
+          email.length < 3 ||
+          phone.length < 3 ||
+          purpose.length < 3
+        ) {
+          toast.error("Each field should have atleast 3 charaacters.");
+        } else {
+          if (selectedGateway) {
+            if (tncRead === true) {
+              // finally make payment after validations
+              toast("Payment in progress.");
+
+              generateInvoice();
+              
+            } else {
+              toast.error("Confirm you have read T&Cs.", emitterConfig);
+            }
+          } else {
+            toast.error("Select a payment gateway.", emitterConfig);
+          }
+        }
+      }
+    }
   };
 
   return (
@@ -172,50 +302,77 @@ function checkout() {
                         <div className="col-md-6 col-sm-12">
                           <div className="form-group card-label">
                             <label className="mb-3">First Name</label>
-                            <input className="form-control" type="text" value={firstName}
-							onChange={(e)=>{setFirstName(e.target.value)}}
-							/>
+                            <input
+                              className="form-control"
+                              type="text"
+                              value={firstName}
+                              onChange={(e) => {
+                                setFirstName(e.target.value);
+                              }}
+                            />
                           </div>
                         </div>
                         <div className="col-md-6 col-sm-12">
                           <div className="form-group card-label">
                             <label className="mb-3">Last Name</label>
-                            <input className="form-control" type="text" value={lastName}
-							onChange={(e)=>{setLastName(e.target.value)}}
-							/>
+                            <input
+                              className="form-control"
+                              type="text"
+                              value={lastName}
+                              onChange={(e) => {
+                                setLastName(e.target.value);
+                              }}
+                            />
                           </div>
                         </div>
                         <div className="col-md-6 col-sm-12">
                           <div className="form-group card-label">
                             <label className="mb-3">Email</label>
-                            <input className="form-control" type="email" value={email}
-							onChange={(e)=>{setEmail(e.target.value)}}
-							/>
+                            <input
+                              className="form-control"
+                              type="email"
+                              value={email}
+                              onChange={(e) => {
+                                setEmail(e.target.value);
+                              }}
+                            />
                           </div>
                         </div>
                         <div className="col-md-6 col-sm-12">
                           <div className="form-group card-label">
                             <label className="mb-3">Phone</label>
-                            <input className="form-control" type="text"  value={phone}
-							onChange={(e)=>{setPhone(e.target.value)}}
-							/>
+                            <input
+                              className="form-control"
+                              type="text"
+                              value={phone}
+                              onChange={(e) => {
+                                setPhone(e.target.value);
+                              }}
+                            />
                           </div>
                         </div>
                         <div className="col-md-6 col-sm-12">
                           <div className="form-group card-label">
                             <label className="mb-3">Purpose</label>
-                            <input className="form-control" type="text" value={purpose} 
-							onChange={(e)=>{setPurpose(e.target.value)}}
-							/>
+                            <input
+                              className="form-control"
+                              type="text"
+                              value={purpose}
+                              onChange={(e) => {
+                                setPurpose(e.target.value);
+                              }}
+                            />
                             <p className="mt-1 text-sm text-gray-500">
                               Write exact illness or reason for appointment{" "}
                             </p>
                           </div>
                         </div>
                       </div>
-                      {isPatientLoggedIn === false && <div className="exist-customer">
-                        Existing Customer? <a href="#">Click here to login</a>
-                      </div>}
+                      {isPatientLoggedIn === false && (
+                        <div className="exist-customer">
+                          Existing Customer? <a href="#">Click here to login</a>
+                        </div>
+                      )}
                     </div>
                     {/* <!--  /Personal Information --> */}
 
@@ -312,29 +469,9 @@ function checkout() {
                         <button
                           type="submit"
                           className="btn btn-primary submit-btn"
-						  onClick={(e)=>{
-							e.preventDefault();
-
-							if(checkLoginStatus() === true){
-								if(firstName.length === 0 || lastName.length === 0 || email.length === 0 || phone.length === 0 || purpose.length === 0){
-									toast.error("Please fill all the fields.", emitterConfig);
-								}else{
-									if(firstName.length < 3 || lastName.length < 3 || email.length < 3 || phone.length < 3 || purpose.length < 3){
-										toast.error("Each field should have atleast 3 charaacters.")
-									}else{
-										if(selectedGateway){
-											if(tncRead === true){ 
-												makePayment();
-											}else{
-												toast.error("Confirm you have read T&Cs.", emitterConfig);
-											}
-										}else{
-											toast.error("Select a payment gateway.",emitterConfig)
-										}
-									}
-								}
-							}
-						  }}
+                          onClick={(e) => {
+                            makePayment(e);
+                          }}
                         >
                           Confirm and Pay
                         </button>
@@ -358,7 +495,7 @@ function checkout() {
                   <div className="booking-doc-info">
                     <a href="doctor-profile.html" className="booking-doc-img">
                       <img
-                        src={data? data.DoctorProfilePicture : "/dummy.jpeg"}
+                        src={data ? data.DoctorProfilePicture : "/dummy.jpeg"}
                         alt="User Image"
                       />
                     </a>
@@ -420,7 +557,7 @@ function checkout() {
             </div>
           </div>
         </div>
-		<ToastContainer
+        <ToastContainer
           position="top-right"
           autoClose={2000}
           hideProgressBar={false}

@@ -1,14 +1,14 @@
-import ScheduleTiming from "../../../models/ScheduleTiming"
+import DocReviews from "../../../models/DocReviews"
 import connectDb from "../../../middleware/mongoose";
 
 
 const handler = async (req, res) => {
-  if (req.method === "GET") {
+  if (req.method === "POST") {
     try {
-        let data = await ScheduleTiming.find({Email : req.query.email});
-          res.status(200).json(data[0]);
-      
-
+        let item = new DocReviews(req.body);
+        await item.save()
+        res.status(200).json({success : true});
+         
     } catch (error) {
       res.status(400).json({ Error: "Internal Server error." });
     }

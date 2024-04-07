@@ -1,14 +1,15 @@
-import ScheduleTiming from "../../../models/ScheduleTiming"
+import DocReviews from "../../../models/DocReviews";
 import connectDb from "../../../middleware/mongoose";
 
-
 const handler = async (req, res) => {
-  if (req.method === "GET") {
+  if (req.method === "PUT") {
     try {
-        let data = await ScheduleTiming.find({Email : req.query.email});
-          res.status(200).json(data[0]);
-      
+      await DocReviews.updateOne(
+        { _id: req.body.reviewId },
+        { $push: { Replies: req.body.newItem } }
+      );
 
+      res.status(200).json({ success: true });
     } catch (error) {
       res.status(400).json({ Error: "Internal Server error." });
     }
